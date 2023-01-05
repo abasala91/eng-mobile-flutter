@@ -1,8 +1,8 @@
-import 'dart:math';
-
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../providers/reserve.dart';
+import 'package:eng/models/http_exception.dart';
+import 'package:awesome_dialog/awesome_dialog.dart';
 
 class myServicesCard extends StatefulWidget {
   @override
@@ -61,21 +61,33 @@ class _myServicesCardState extends State<myServicesCard> {
                           children: [
                             reservesItems[i].reserveStatus == 'accepted'
                                 ? Text(
-                                    '${reservesItems[i].reserveStatus}',
+                                    '😊',
+                                    // '${reservesItems[i].reserveStatus}',
                                     style: TextStyle(
-                                        backgroundColor: Colors.green),
+                                        // backgroundColor: Colors.green,
+                                        fontSize: 30,
+                                        fontWeight: FontWeight.bold),
                                   )
                                 : reservesItems[i].reserveStatus == 'waiting'
-                                    ? Text('${reservesItems[i].reserveStatus}',
+                                    ? Text(
+                                        '🙂',
+                                        // '${reservesItems[i].reserveStatus}',
                                         style: TextStyle(
-                                            backgroundColor: Colors.yellow))
+                                            // backgroundColor: Colors.yellow,
+                                            fontSize: 30,
+                                            fontWeight: FontWeight.bold),
+                                      )
                                     : reservesItems[i].reserveStatus ==
                                             'rejected'
                                         ? Text(
-                                            '${reservesItems[i].reserveStatus}',
+                                            '😞',
+                                            // '${reservesItems[i].reserveStatus}',
                                             style: TextStyle(
-                                                backgroundColor: Color.fromARGB(
-                                                    255, 247, 77, 3)))
+                                                // backgroundColor: Color.fromARGB(
+                                                //     255, 241, 76, 76),
+                                                fontSize: 30,
+                                                fontWeight: FontWeight.bold),
+                                          )
                                         : Text(
                                             '${reservesItems[i].reserveStatus}'),
                             IconButton(
@@ -94,8 +106,25 @@ class _myServicesCardState extends State<myServicesCard> {
                       ),
                       reservesItems[i].reserveStatus == 'accepted'
                           ? Text(
-                              'برجاء التوجه للنقابة في موعد اقصاه 48 ساعة لاستكمال اجرائات الحجز')
-                          : Container(),
+                              ' برجاء التوجه للنقابة خلال 48 ساعة لاستكمال اجرائات الحجز',
+                              style: TextStyle(color: Colors.green),
+                              textAlign: TextAlign.right,
+                            )
+                          : reservesItems[i].reserveStatus == 'rejected'
+                              ? Text(
+                                  'عفوا لم يحالفكم الحظ هذه المرة!',
+                                  style: TextStyle(color: Colors.red),
+                                  textAlign: TextAlign.right,
+                                )
+                              : reservesItems[i].reserveStatus == 'waiting'
+                                  ? Text(
+                                      'تم اجراء القرعة و انت على قائمة الانتظار',
+                                      style: TextStyle(
+                                          color: Color.fromARGB(
+                                              255, 204, 191, 77)),
+                                      textAlign: TextAlign.right,
+                                    )
+                                  : Container(),
                       if (_expanded)
                         Container(
                             height: 50,
@@ -104,39 +133,75 @@ class _myServicesCardState extends State<myServicesCard> {
                               children: [
                                 IconButton(
                                     onPressed: () {
-                                      showDialog(
-                                          context: context,
-                                          builder: (ctx) {
-                                            return AlertDialog(
-                                              title: Text('Alert'),
-                                              content:
-                                                  Text('Delete this reserve?'),
-                                              actions: [
-                                                TextButton(
-                                                    onPressed: () {
-                                                      setState(() {
-                                                        Provider.of<Reserve>(
-                                                                context,
-                                                                listen: false)
-                                                            .deleteItem(
-                                                                reservesItems[i]
-                                                                    .id);
-                                                        Navigator.of(context)
-                                                            .pop();
-                                                      });
-                                                    },
-                                                    child: Text('Yes')),
-                                                TextButton(
-                                                    onPressed: () {
-                                                      setState(() {
-                                                        Navigator.of(context)
-                                                            .pop();
-                                                      });
-                                                    },
-                                                    child: Text('No')),
-                                              ],
-                                            );
-                                          });
+                                      AwesomeDialog(
+                                        context: context,
+                                        dialogType: DialogType.warning,
+                                        // animType: AnimType.rightSlide,
+                                        title: 'Warning!',
+                                        desc:
+                                            'Do you want to delete this reserve?',
+                                        btnCancelOnPress: () {},
+                                        btnOkOnPress: () async {
+                                          try {
+                                            await Provider.of<Reserve>(context,
+                                                    listen: false)
+                                                .deleteItem(
+                                                    reservesItems[i].id);
+                                          } on HttpException catch (e) {
+                                            var errorMessage = '${e}';
+                                            ScaffoldMessenger.of(context)
+                                                .showSnackBar(SnackBar(
+                                              content: Text(errorMessage),
+                                            ));
+                                          } catch (e) {}
+                                        },
+                                      ).show();
+                                      // showDialog(
+                                      //     context: context,
+                                      //     builder: (ctx) {
+                                      //       return AlertDialog(
+                                      //         title: Text('Alert'),
+                                      //         content:
+                                      //             Text('Delete this reserve?'),
+                                      //         actions: [
+                                      //           TextButton(
+                                      //               onPressed: () async {
+                                      //                 try {
+                                      //                   await Provider.of<
+                                      //                               Reserve>(
+                                      //                           context,
+                                      //                           listen: false)
+                                      //                       .deleteItem(
+                                      //                           reservesItems[i]
+                                      //                               .id);
+                                      //                   Navigator.of(context)
+                                      //                       .pop();
+                                      //                 } on HttpException catch (e) {
+                                      //                   Navigator.of(context)
+                                      //                       .pop();
+                                      //                   var errorMessage =
+                                      //                       '${e}';
+                                      //                   ScaffoldMessenger.of(
+                                      //                           context)
+                                      //                       .showSnackBar(
+                                      //                           SnackBar(
+                                      //                     content: Text(
+                                      //                         errorMessage),
+                                      //                   ));
+                                      //                 } catch (e) {}
+                                      //               },
+                                      //               child: Text('Yes')),
+                                      //           TextButton(
+                                      //               onPressed: () {
+                                      //                 setState(() {
+                                      //                   Navigator.of(context)
+                                      //                       .pop();
+                                      //                 });
+                                      //               },
+                                      //               child: Text('No')),
+                                      //         ],
+                                      //       );
+                                      //     });
                                     },
                                     icon: Icon(
                                       Icons.delete,

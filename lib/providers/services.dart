@@ -31,7 +31,6 @@ class Services with ChangeNotifier {
       }
 
       final data = jsonDecode(extractedData.body) as List;
-      print(data);
       final List<Service> loadedData = [];
       if (data.length > 0) {
         for (var i = 0; i < data.length; i++) {

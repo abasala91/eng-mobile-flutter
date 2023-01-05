@@ -1,9 +1,8 @@
-import 'package:eng/providers/services.dart';
-import 'package:eng/screens/admin_panel_screen.dart';
+import '../screens/complaints_screen.dart';
 import 'package:flutter/material.dart';
 import '../screens/my_services_screen.dart';
-import '../screens/manage_services_screen.dart';
 import '../screens/about_screen.dart';
+import '../screens/user_profile_screen.dart';
 import 'package:provider/provider.dart';
 import '../providers/auth.dart';
 
@@ -32,7 +31,15 @@ class AppDrawer extends StatelessWidget {
           ),
           Divider(),
           ListTile(
-            leading: Icon(Icons.favorite_outline_sharp),
+            leading: Icon(Icons.account_circle),
+            title: Text('My Profile'),
+            onTap: () {
+              Navigator.of(context).pushNamed(UserProfileScreen.routeName);
+            },
+          ),
+          Divider(),
+          ListTile(
+            leading: Icon(Icons.favorite),
             title: Text('My Services'),
             onTap: () {
               Navigator.of(context)
@@ -40,6 +47,18 @@ class AppDrawer extends StatelessWidget {
             },
           ),
           Divider(),
+          ListTile(
+            leading: const Icon(
+              Icons.rate_review,
+            ),
+            title: const Text(
+              'Complaints and suggestions',
+            ),
+            onTap: () {
+              Navigator.of(context)
+                  .pushReplacementNamed(ComplaintsScreen.routeName);
+            },
+          ),
           ListTile(
             leading: Icon(
               Icons.exit_to_app,
@@ -66,15 +85,6 @@ class AppDrawer extends StatelessWidget {
               Navigator.of(context).pushReplacementNamed(AboutScreen.routeName);
             },
           ),
-          // isAdmin
-          //     ? ListTile(
-          //         leading: Icon(Icons.note),
-          //         title: Text('Admin Panel'),
-          //         onTap: () {
-          //           Navigator.of(context).pushNamed(AdminPanelScreen.routeName);
-          //         },
-          //       )
-          //     : Container(),
         ],
       ),
     );

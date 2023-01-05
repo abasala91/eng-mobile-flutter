@@ -2,9 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../widgets/app_drawer.dart';
 import '../providers/services.dart';
-import './user_profile_screen.dart';
 import '../widgets/overview_grid.dart';
-import '../providers/auth.dart';
 
 class OverViewScreen extends StatefulWidget {
   @override
@@ -39,13 +37,13 @@ class _OverViewScreenState extends State<OverViewScreen> {
       appBar: AppBar(
         title: const Text('Latest News'),
         actions: [
-          IconButton(
-              onPressed: () {
-                Navigator.of(context).pushNamed(UserProfileScreen.routeName);
-                //  refreshAfterPop();
-              },
-              icon: Icon(Icons.account_circle)),
-          //Badge(child: Icon(Icons.beach_access, value: value)) TODO
+          ElevatedButton(
+            onPressed: refreshMainScreen,
+            child: Icon(
+              Icons.refresh,
+              color: Colors.white,
+            ),
+          )
         ],
       ),
       body: RefreshIndicator(

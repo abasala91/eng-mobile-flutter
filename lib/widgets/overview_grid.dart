@@ -1,15 +1,10 @@
-import 'dart:developer';
-import 'dart:math';
-
-import 'package:eng/screens/add_service_screen.dart';
+import 'package:eng/providers/services.dart';
 import 'package:intl/intl.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../providers/services.dart';
 import '../providers/auth.dart';
 import '../screens/services_details_screen.dart';
 import '../providers/service.dart';
-import 'package:intl/intl.dart';
 
 class OverviewGrid extends StatelessWidget {
   Function refreshAfterPop;
@@ -32,6 +27,7 @@ class OverviewGrid extends StatelessWidget {
               await Navigator.of(context).pushNamed(
                   ServicesDetailsScreen.routeName,
                   arguments: service.id);
+
               refreshAfterPop();
             },
             child: GridTileBar(
@@ -50,7 +46,7 @@ class OverviewGrid extends StatelessWidget {
               ),
               leading: service.validDays != null
                   ? Text(
-                      '''هذا الاعلان ساري حتى
+                      '''valid till
 ${DateFormat.yMMMMd().format(service.validDays).toString()}''',
                       style: TextStyle(color: Colors.white),
                     )

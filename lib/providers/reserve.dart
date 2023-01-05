@@ -82,7 +82,6 @@ class Reserve with ChangeNotifier {
           reserveStatus: extractedData[i]['reserveStatus']);
 
       loadedData.add(result);
-      print(result.reserveStatus);
     }
     _items = loadedData;
     notifyListeners();
@@ -127,7 +126,8 @@ class Reserve with ChangeNotifier {
       final response =
           await http.delete(url, headers: {"x-auth-token": authToken});
       if (response.statusCode >= 400) {
-        throw HttpException("Cannot delete this item");
+        print(response.body);
+        throw HttpException(response.body);
       }
       ;
     } catch (e) {

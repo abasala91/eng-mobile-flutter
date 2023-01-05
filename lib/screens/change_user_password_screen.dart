@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:eng/models/http_exception.dart';
 import 'package:eng/screens/auth-screen.dart';
 import 'package:flutter/material.dart';
@@ -19,11 +21,11 @@ class _ChangeUserPasswordScreenState extends State<ChangeUserPasswordScreen> {
 
   var _confirmPassController = TextEditingController();
 
-  void _showDialoge(String message) {
+  void _showDialoge(Icon title, String message) {
     showDialog(
         context: context,
         builder: (ctx) => AlertDialog(
-              title: Text('Error'),
+              title: title,
               content: Text(message),
               actions: [
                 TextButton(
@@ -35,6 +37,11 @@ class _ChangeUserPasswordScreenState extends State<ChangeUserPasswordScreen> {
             ));
   }
 
+  List<String> str = [
+    "must be at least 8 charachters long.",
+    "must contains at least 1 lowercase character.",
+    "must contains at least 1 number.",
+  ];
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -82,6 +89,28 @@ class _ChangeUserPasswordScreenState extends State<ChangeUserPasswordScreen> {
                 ),
               ),
               SizedBox(
+                height: 10,
+              ),
+              Column(
+                children: str.map((strone) {
+                  return Row(children: [
+                    Text(
+                      "\u2022",
+                      style: TextStyle(fontSize: 17),
+                    ), //bullet text
+                    SizedBox(
+                      width: 10,
+                    ), //space between bullet and text
+                    Expanded(
+                      child: Text(
+                        strone,
+                        style: TextStyle(fontSize: 17),
+                      ), //text
+                    )
+                  ]);
+                }).toList(),
+              ),
+              SizedBox(
                 height: 40,
               ),
               ElevatedButton(
@@ -101,18 +130,32 @@ class _ChangeUserPasswordScreenState extends State<ChangeUserPasswordScreen> {
                     try {
                       await Provider.of<Auth>(context, listen: false)
                           .changePassword(
-                              _oldPassController.text, _newPassController.text);
+                              _oldPassController.text, _newPassController.text)
+                          .then((value) => _showDialoge(
+                              Icon(
+                                Icons.done_outline,
+                                color: Colors.green,
+                              ),
+                              "Password Changed Successfully"));
                       Navigator.of(context)
                           .pushReplacementNamed(AuthScreen.routeName);
-
                       // Navigator.of(context).pop();
                     } on HttpException catch (error) {
                       var errorMessage = '${error}';
-
-                      _showDialoge(errorMessage);
+                      _showDialoge(
+                          Icon(
+                            Icons.error_outline,
+                            color: Colors.amber,
+                          ),
+                          errorMessage);
                     } catch (e) {
                       var errorMessage = 'Something failed!';
-                      _showDialoge(e);
+                      _showDialoge(
+                          Icon(
+                            Icons.error_outline,
+                            color: Colors.amber,
+                          ),
+                          e);
                     }
                   },
                   child: Text('save')),

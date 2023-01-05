@@ -128,13 +128,13 @@ class _AuthCardState extends State<AuthCard> {
       await Provider.of<Auth>(context, listen: false)
           .signin(_authData['engId'], _authData['password']);
     } on HttpException catch (error) {
-      var errorMessage = '${error}';
+      var errorMessage = '${error.toString()}';
 
       _showDialoge(errorMessage);
     } catch (e) {
       var errorMessage = 'Something failed!';
-
-      _showDialoge(e);
+      print(e.toString());
+      _showDialoge(errorMessage);
     }
     setState(() {
       _isLoading = false;

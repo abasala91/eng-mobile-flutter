@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../providers/services.dart';
 import '../providers/reserve.dart';
+import 'package:awesome_dialog/awesome_dialog.dart';
 import '../screens/applicants_screen.dart';
 
 class ServicesDetailsScreen extends StatefulWidget {
@@ -15,9 +16,7 @@ class ServicesDetailsScreen extends StatefulWidget {
 }
 
 class _ServicesDetailsScreenState extends State<ServicesDetailsScreen> {
-  var _isInit = true;
   String dropdownvalue = '0';
-
   // List of items in our dropdown menu
   var items = [
     '0',
@@ -44,14 +43,6 @@ class _ServicesDetailsScreenState extends State<ServicesDetailsScreen> {
   }
 
   @override
-  void didChangeDependencies() {
-    if (_isInit) {
-      Provider.of<Services>(context).fetchAndGet();
-    }
-    _isInit = false;
-    super.didChangeDependencies();
-  }
-
   int _currentValue = 0;
   @override
   Widget build(BuildContext context) {
@@ -61,9 +52,6 @@ class _ServicesDetailsScreenState extends State<ServicesDetailsScreen> {
       context,
       listen: false,
     ).findById(serviceId);
-    if (loadedService == null) {
-      _showDialoge('something failed', 'Error');
-    }
     final reserveData = Provider.of<Reserve>(context, listen: false);
     return Scaffold(
       appBar: AppBar(
@@ -92,7 +80,10 @@ class _ServicesDetailsScreenState extends State<ServicesDetailsScreen> {
                 height: 5,
               ),
               Container(
-                child: Text(loadedService.description),
+                child: Text(
+                  loadedService.description,
+                  textAlign: TextAlign.right,
+                ),
               ),
               const SizedBox(
                 height: 10,
@@ -105,28 +96,6 @@ class _ServicesDetailsScreenState extends State<ServicesDetailsScreen> {
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
-                              // DropdownButton(
-                              //   // Initial Value
-                              //   value: dropdownvalue,
-
-                              //   // Down Arrow Icon
-                              //   icon: const Icon(Icons.keyboard_arrow_down),
-
-                              //   // Array list of items
-                              //   items: items.map((String items) {
-                              //     return DropdownMenuItem(
-                              //       value: items,
-                              //       child: Text(items),
-                              //     );
-                              //   }).toList(),
-                              //   // After selecting the desired option,it will
-                              //   // change button value to selected value
-                              //   onChanged: (String newValue) {
-                              //     setState(() {
-                              //       dropdownvalue = newValue;
-                              //     });
-                              //   },
-                              // ),
                               loadedService.maxPersons > 0
                                   ? Column(
                                       children: <Widget>[
@@ -162,40 +131,48 @@ class _ServicesDetailsScreenState extends State<ServicesDetailsScreen> {
                             try {
                               await reserveData
                                   .addItem(serviceId, _currentValue.toString())
-                                  .then((value) => _showDialoge(
-                                      'تم التسجيل بنجاح و سيتم اعلامكم بنتيجة القرعة بعد انتهاء مهلة الاعلان',
-                                      'Success'));
-                              // Navigator.of(context).pushReplacementNamed('/');
-                              // ScaffoldMessenger.of(context)
-                              //     .showSnackBar(const SnackBar(
-                              //   content: Text('Good! Successfully registred!'),
-                              // ));
-                              // Navigator.of(context).pushReplacementNamed('/');
+                                  .then((value) => AwesomeDialog(
+                                        context: context,
+                                        dialogType: DialogType.success,
+                                        animType: AnimType.rightSlide,
+                                        title: 'Done!',
+                                        desc:
+                                            'تم التسجيل بنجاح و سيتم اعلامكم بنتيجة القرعة بعد انتهاء مهلة الاعلان',
+                                        btnOkOnPress: () {},
+                                      ).show());
                             } on HttpException catch (e) {
                               var errorMessage = '${e}';
-                              ScaffoldMessenger.of(context)
-                                  .showSnackBar(SnackBar(
-                                      content: Text(errorMessage),
-                                      action: SnackBarAction(
-                                          label: 'go to my services',
-                                          onPressed: () {
-                                            Navigator.of(context).pushNamed(
-                                                MyServicesScreen.routeName);
-                                          })));
+                              AwesomeDialog(
+                                context: context,
+                                dialogType: DialogType.info,
+                                animType: AnimType.rightSlide,
+                                title: 'Alert!',
+                                desc: errorMessage,
+                                btnOkOnPress: () {},
+                              ).show();
+                              // ScaffoldMessenger.of(context)
+                              //     .showSnackBar(SnackBar(
+                              //         content: Text(errorMessage),
+                              //         action: SnackBarAction(
+                              //             label: 'go to my services',
+                              //             onPressed: () {
+                              //               Navigator.of(context).pushNamed(
+                              //                   MyServicesScreen.routeName);
+                              //             })));
                             } catch (e) {
                               print(e);
                             }
                           },
                           child: Text("!سجل الان"))
                       : Container(
-                          child: TextButton(
-                              onPressed: () {
-                                Navigator.of(context).pushNamed(
-                                    ApplicantsScreen.routaName,
-                                    arguments: serviceId);
-                              },
-                              child: Text('اظهار اسماء المتقدمين')),
-                        )
+                          // child: TextButton(
+                          //     onPressed: () {
+                          //       Navigator.of(context).pushNamed(
+                          //           ApplicantsScreen.routaName,
+                          //           arguments: serviceId);
+                          //     },
+                          //     child: Text('اظهار اسماء المتقدمين')),
+                          )
                   : Container()
             ],
           ),

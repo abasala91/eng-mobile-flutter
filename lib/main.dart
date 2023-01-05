@@ -1,17 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import './screens/admin_panel_screen.dart';
-import './screens/manage_services_screen.dart';
 import './screens/splash-screen.dart';
 import './screens/overview_screen.dart';
 import '../screens/auth-screen.dart';
 import './screens/services_details_screen.dart';
-import './screens/add_service_screen.dart';
 import 'screens/my_services_screen.dart';
 import 'screens/change_user_password_screen.dart';
 import './screens/user_profile_screen.dart';
 import './screens/about_screen.dart';
 import './screens/applicants_screen.dart';
+import './screens/complaints_screen.dart';
 import './providers/auth.dart';
 import './providers/services.dart';
 import './providers/reserve.dart';
@@ -46,8 +44,7 @@ class MyApp extends StatelessWidget {
           builder: ((context, auth, _) => MaterialApp(
                 title: 'Damietta Syndicate',
                 theme: ThemeData(
-                  primarySwatch: Colors.purple,
-                ),
+                    primarySwatch: Colors.purple, fontFamily: 'Tajawal'),
                 home: auth.isAuth
                     ? OverViewScreen()
                     : FutureBuilder(
@@ -62,16 +59,13 @@ class MyApp extends StatelessWidget {
                 routes: {
                   ServicesDetailsScreen.routeName: (context) =>
                       ServicesDetailsScreen(),
-                  AddServiceScreen.routeName: (context) => AddServiceScreen(),
                   MyServicesScreen.routeName: (context) => MyServicesScreen(),
-                  ManageServiceScreen.routeName: (context) =>
-                      ManageServiceScreen(),
                   UserProfileScreen.routeName: (context) => UserProfileScreen(),
-                  AdminPanelScreen.routeName: (context) => AdminPanelScreen(),
                   ChangeUserPasswordScreen.routeName: (context) =>
                       ChangeUserPasswordScreen(),
                   ApplicantsScreen.routaName: (context) => ApplicantsScreen(),
-                  AboutScreen.routeName: (context) => AboutScreen()
+                  AboutScreen.routeName: (context) => AboutScreen(),
+                  ComplaintsScreen.routeName: (context) => ComplaintsScreen()
                 },
               )),
         ));

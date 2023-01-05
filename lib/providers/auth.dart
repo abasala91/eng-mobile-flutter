@@ -10,7 +10,6 @@ import '../variables.dart';
 class Auth with ChangeNotifier {
   String _token;
   String _userId;
-  bool _isAdmin;
 
   String get userId {
     return _userId;
@@ -18,10 +17,6 @@ class Auth with ChangeNotifier {
 
   bool get isAuth {
     return token != null;
-  }
-
-  bool get isAdmin {
-    return _isAdmin;
   }
 
   String get token {
@@ -47,8 +42,6 @@ class Auth with ChangeNotifier {
     }
     _userId = jsonDecode(response.body)["userId"];
     _token = jsonDecode(response.body)["token"];
-    _isAdmin = jsonDecode(response.body)['isAdmin'];
-
     url = Uri.parse("$appUrl/api/users/me");
     final result = await http.get(url, headers: {"x-auth-token": _token});
     final extractedData = jsonDecode(result.body);
@@ -101,10 +94,6 @@ class Auth with ChangeNotifier {
   Future<void> updateUser(
       String phone, String email, String address, imageFilePath) async {
     final url = Uri.parse("$appUrl/api/users/me");
-    // await http.put(url,
-    //     body: {"phone": phone, "email": email, "address": address},
-    //     headers: {"x-auth-token": _token});
-
     var request = http.MultipartRequest(
       'POST',
       Uri.parse(
@@ -125,8 +114,6 @@ class Auth with ChangeNotifier {
           headers: {"x-auth-token": _token}),
       request.send()
     ]);
-
-    print(response[1].statusCode);
     notifyListeners();
   }
 
@@ -153,7 +140,6 @@ class Auth with ChangeNotifier {
     _userId = null;
     SharedPreferences preferences = await SharedPreferences.getInstance();
     await preferences.clear();
-    //_isAdmin = null;
 
     notifyListeners();
   }
@@ -171,6 +157,20 @@ class Auth with ChangeNotifier {
       throw HttpException(response.body);
     }
     logout();
+    notifyListeners();
+  }
+
+  Future<void> postComplaint(String message) async {
+    final url = Uri.parse("${appUrl}/api/users/post-complaint");
+    final response = await http.post(url, headers: {
+      "x-auth-token": _token
+    }, body: {
+      "message": message,
+    });
+    if (response.statusCode >= 400) {
+      throw HttpException(response.body);
+    }
+
     notifyListeners();
   }
 }
