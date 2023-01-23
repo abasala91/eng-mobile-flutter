@@ -32,7 +32,7 @@ class _myServicesCardState extends State<myServicesCard> {
   }
 
   Widget build(BuildContext context) {
-    final reservesItems = Provider.of<Reserve>(context).items;
+    final reservesItems = Provider.of<Reserve>(context).getPendingServices();
 
     return RefreshIndicator(
       onRefresh: refreshMainScreen,
@@ -156,52 +156,6 @@ class _myServicesCardState extends State<myServicesCard> {
                                           } catch (e) {}
                                         },
                                       ).show();
-                                      // showDialog(
-                                      //     context: context,
-                                      //     builder: (ctx) {
-                                      //       return AlertDialog(
-                                      //         title: Text('Alert'),
-                                      //         content:
-                                      //             Text('Delete this reserve?'),
-                                      //         actions: [
-                                      //           TextButton(
-                                      //               onPressed: () async {
-                                      //                 try {
-                                      //                   await Provider.of<
-                                      //                               Reserve>(
-                                      //                           context,
-                                      //                           listen: false)
-                                      //                       .deleteItem(
-                                      //                           reservesItems[i]
-                                      //                               .id);
-                                      //                   Navigator.of(context)
-                                      //                       .pop();
-                                      //                 } on HttpException catch (e) {
-                                      //                   Navigator.of(context)
-                                      //                       .pop();
-                                      //                   var errorMessage =
-                                      //                       '${e}';
-                                      //                   ScaffoldMessenger.of(
-                                      //                           context)
-                                      //                       .showSnackBar(
-                                      //                           SnackBar(
-                                      //                     content: Text(
-                                      //                         errorMessage),
-                                      //                   ));
-                                      //                 } catch (e) {}
-                                      //               },
-                                      //               child: Text('Yes')),
-                                      //           TextButton(
-                                      //               onPressed: () {
-                                      //                 setState(() {
-                                      //                   Navigator.of(context)
-                                      //                       .pop();
-                                      //                 });
-                                      //               },
-                                      //               child: Text('No')),
-                                      //         ],
-                                      //       );
-                                      //     });
                                     },
                                     icon: Icon(
                                       Icons.delete,

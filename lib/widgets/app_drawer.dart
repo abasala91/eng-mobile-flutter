@@ -79,7 +79,7 @@ class AppDrawer extends StatelessWidget {
               Icons.help,
             ),
             title: const Text(
-              'Help',
+              'About',
             ),
             onTap: () {
               Navigator.of(context).pushReplacementNamed(AboutScreen.routeName);

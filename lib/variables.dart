@@ -1,1 +1,1 @@
-const String appUrl = 'https://engapp.ddns.net';
+const String appUrl = 'http://192.168.1.102:5000';

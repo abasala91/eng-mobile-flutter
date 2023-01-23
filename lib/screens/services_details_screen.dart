@@ -16,6 +16,7 @@ class ServicesDetailsScreen extends StatefulWidget {
 }
 
 class _ServicesDetailsScreenState extends State<ServicesDetailsScreen> {
+  var _isLoading = false;
   String dropdownvalue = '0';
   // List of items in our dropdown menu
   var items = [
@@ -47,12 +48,13 @@ class _ServicesDetailsScreenState extends State<ServicesDetailsScreen> {
   @override
   Widget build(BuildContext context) {
     DateTime now = new DateTime.now();
+    final reserveData = Provider.of<Reserve>(context, listen: false);
     final serviceId = ModalRoute.of(context).settings.arguments as String;
     final loadedService = Provider.of<Services>(
       context,
       listen: false,
     ).findById(serviceId);
-    final reserveData = Provider.of<Reserve>(context, listen: false);
+
     return Scaffold(
       appBar: AppBar(
         title: Text(loadedService.title),
@@ -67,7 +69,7 @@ class _ServicesDetailsScreenState extends State<ServicesDetailsScreen> {
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(15),
                   child: Container(
-                    height: 500,
+                    // height: 500,
                     width: MediaQuery.of(context).size.width * 0.99,
                     child: Image.network(
                       loadedService.imgUrl,
@@ -126,44 +128,45 @@ class _ServicesDetailsScreenState extends State<ServicesDetailsScreen> {
                   ? loadedService.validDays.compareTo(
                               new DateTime(now.year, now.month, now.day)) >=
                           0
-                      ? ElevatedButton(
-                          onPressed: () async {
-                            try {
-                              await reserveData
-                                  .addItem(serviceId, _currentValue.toString())
-                                  .then((value) => AwesomeDialog(
-                                        context: context,
-                                        dialogType: DialogType.success,
-                                        animType: AnimType.rightSlide,
-                                        title: 'Done!',
-                                        desc:
-                                            'تم التسجيل بنجاح و سيتم اعلامكم بنتيجة القرعة بعد انتهاء مهلة الاعلان',
-                                        btnOkOnPress: () {},
-                                      ).show());
-                            } on HttpException catch (e) {
-                              var errorMessage = '${e}';
-                              AwesomeDialog(
-                                context: context,
-                                dialogType: DialogType.info,
-                                animType: AnimType.rightSlide,
-                                title: 'Alert!',
-                                desc: errorMessage,
-                                btnOkOnPress: () {},
-                              ).show();
-                              // ScaffoldMessenger.of(context)
-                              //     .showSnackBar(SnackBar(
-                              //         content: Text(errorMessage),
-                              //         action: SnackBarAction(
-                              //             label: 'go to my services',
-                              //             onPressed: () {
-                              //               Navigator.of(context).pushNamed(
-                              //                   MyServicesScreen.routeName);
-                              //             })));
-                            } catch (e) {
-                              print(e);
-                            }
-                          },
-                          child: Text("!سجل الان"))
+                      ? _isLoading
+                          ? CircularProgressIndicator()
+                          : ElevatedButton(
+                              onPressed: () async {
+                                setState(() {
+                                  _isLoading = true;
+                                });
+
+                                try {
+                                  await reserveData
+                                      .addItem(
+                                          serviceId, _currentValue.toString())
+                                      .then((value) => AwesomeDialog(
+                                            context: context,
+                                            dialogType: DialogType.success,
+                                            animType: AnimType.rightSlide,
+                                            title: 'Done!',
+                                            desc:
+                                                'تم التسجيل بنجاح و سيتم اعلامكم بنتيجة القرعة بعد انتهاء مهلة الاعلان',
+                                            btnOkOnPress: () {},
+                                          ).show());
+                                } on HttpException catch (e) {
+                                  var errorMessage = '${e}';
+                                  AwesomeDialog(
+                                    context: context,
+                                    dialogType: DialogType.info,
+                                    animType: AnimType.rightSlide,
+                                    title: 'Alert!',
+                                    desc: errorMessage,
+                                    btnOkOnPress: () {},
+                                  ).show();
+                                } catch (e) {
+                                  print(e);
+                                }
+                                setState(() {
+                                  _isLoading = false;
+                                });
+                              },
+                              child: Text("!سجل الان"))
                       : Container(
                           // child: TextButton(
                           //     onPressed: () {

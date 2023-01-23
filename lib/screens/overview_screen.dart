@@ -4,12 +4,26 @@ import '../widgets/app_drawer.dart';
 import '../providers/services.dart';
 import '../widgets/overview_grid.dart';
 
+import 'package:internet_connection_checker/internet_connection_checker.dart';
+import 'package:connectivity_plus/connectivity_plus.dart';
+
 class OverViewScreen extends StatefulWidget {
   @override
   State<OverViewScreen> createState() => _OverViewScreenState();
 }
 
 class _OverViewScreenState extends State<OverViewScreen> {
+  Future checkInternet() async {
+    bool result = await InternetConnectionChecker().hasConnection;
+    if (result == true) {
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+        content: Text('No Connection!'),
+        backgroundColor: Colors.red,
+      ));
+    }
+  }
+
   var _isInit = true;
   var _isLoading = false;
   @override
@@ -28,6 +42,12 @@ class _OverViewScreenState extends State<OverViewScreen> {
 
   Future<void> refreshMainScreen() async {
     await Provider.of<Services>(context, listen: false).fetchAndGet();
+  }
+
+  @override
+  void initState() {
+    checkInternet();
+    super.initState();
   }
 
   @override
@@ -55,14 +75,9 @@ class _OverViewScreenState extends State<OverViewScreen> {
             : servicesData.isEmpty
                 ? Center(
                     child: Container(
-                      child: Column(
-                        children: [
-                          Image.asset('assets/images/sad.png'),
-                          Text(
-                            'No Services At This Time!',
-                            style: TextStyle(fontSize: 20),
-                          ),
-                        ],
+                      child: Text(
+                        'No News At This Time!',
+                        style: TextStyle(fontSize: 20),
                       ),
                     ),
                   )

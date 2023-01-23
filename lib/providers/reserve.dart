@@ -13,15 +13,16 @@ class ReserveItem {
   final String persons;
   final String imgUrl;
   final String reserveStatus;
+  final bool isTosDone;
 
-  ReserveItem({
-    @required this.id,
-    @required this.persons,
-    @required this.name,
-    @required this.title,
-    @required this.imgUrl,
-    @required this.reserveStatus,
-  });
+  ReserveItem(
+      {@required this.id,
+      @required this.persons,
+      @required this.name,
+      @required this.title,
+      @required this.imgUrl,
+      @required this.reserveStatus,
+      @required this.isTosDone});
 }
 
 class Reserve with ChangeNotifier {
@@ -74,6 +75,7 @@ class Reserve with ChangeNotifier {
           name: extractedData[i]['userId']['name'],
           persons: extractedData[i]['persons'].toString(),
           title: extractedData[i]['tripId']['title'],
+          isTosDone: extractedData[i]['tripId']['isTosDone'],
           imgUrl: extractedData[i]['tripId']['imgUrl'] != ''
               ? extractedData[i]['tripId']['imgUrl']
                   .toString()
@@ -85,6 +87,14 @@ class Reserve with ChangeNotifier {
     }
     _items = loadedData;
     notifyListeners();
+  }
+
+  List<ReserveItem> getTosServices() {
+    return items.where((element) => element.isTosDone).toList();
+  }
+
+  List<ReserveItem> getPendingServices() {
+    return items.where((element) => element.isTosDone == false).toList();
   }
 
   Future<void> getAllReserves(String tripId) async {
