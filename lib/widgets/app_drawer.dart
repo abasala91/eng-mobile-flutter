@@ -1,7 +1,7 @@
-import '../screens/complaints_screen.dart';
 import 'package:flutter/material.dart';
 import '../screens/my_services_screen.dart';
-import '../screens/about_screen.dart';
+import '../screens/contact-us-screen.dart';
+import '../screens/about-screen.dart';
 import '../screens/user_profile_screen.dart';
 import 'package:provider/provider.dart';
 import '../providers/auth.dart';
@@ -9,11 +9,6 @@ import '../providers/auth.dart';
 class AppDrawer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    // final userData = Provider.of<Auth>(context).userData;
-    // final userNameIndex = userData.name.indexOf(' ');
-    // final userName = userData.name.substring(0, userNameIndex);
-
-    // bool isAdmin = Provider.of<Auth>(context, listen: false).isAdmin;
     return Drawer(
       child: Column(
         children: [
@@ -49,28 +44,14 @@ class AppDrawer extends StatelessWidget {
           Divider(),
           ListTile(
             leading: const Icon(
-              Icons.rate_review,
+              Icons.phone,
             ),
             title: const Text(
-              'Complaints and suggestions',
+              'Contact Us',
             ),
             onTap: () {
               Navigator.of(context)
-                  .pushReplacementNamed(ComplaintsScreen.routeName);
-            },
-          ),
-          ListTile(
-            leading: Icon(
-              Icons.exit_to_app,
-              color: Colors.red,
-            ),
-            title: Text(
-              'Logout',
-              style: TextStyle(color: Colors.red),
-            ),
-            onTap: () {
-              Navigator.of(context).pop();
-              Provider.of<Auth>(context, listen: false).logout();
+                  .pushReplacementNamed(ContactUsScreen.routeName);
             },
           ),
           Divider(),
@@ -83,6 +64,21 @@ class AppDrawer extends StatelessWidget {
             ),
             onTap: () {
               Navigator.of(context).pushReplacementNamed(AboutScreen.routeName);
+            },
+          ),
+          ListTile(
+            leading: Icon(
+              Icons.exit_to_app,
+              color: Colors.red,
+            ),
+            title: Text(
+              'Log out',
+              style: TextStyle(color: Colors.red),
+            ),
+            onTap: () {
+              Navigator.of(context).pop();
+              Provider.of<Auth>(context, listen: false).logout();
+              Navigator.of(context).pushReplacementNamed('/');
             },
           ),
         ],

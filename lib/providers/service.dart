@@ -13,6 +13,9 @@ class Service with ChangeNotifier {
   final DateTime validDays;
   final int maxPersons;
   final String serviceType;
+  final int attendance;
+  final int applicants;
+  final List socialDays;
 
   Service(
       {@required this.description,
@@ -23,5 +26,8 @@ class Service with ChangeNotifier {
       @required this.isReserve,
       @required this.validDays,
       @required this.maxPersons,
-      @required this.serviceType});
+      @required this.serviceType,
+      @required this.attendance,
+      @required this.applicants,
+      @required this.socialDays});
 }

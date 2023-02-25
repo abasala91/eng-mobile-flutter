@@ -55,7 +55,7 @@ class _OverViewScreenState extends State<OverViewScreen> {
     var servicesData = Provider.of<Services>(context).items.reversed.toList();
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Latest News'),
+        title: const Text('News and Services'),
         actions: [
           ElevatedButton(
             onPressed: refreshMainScreen,
@@ -75,7 +75,7 @@ class _OverViewScreenState extends State<OverViewScreen> {
             : servicesData.isEmpty
                 ? Center(
                     child: Container(
-                      child: Text(
+                      child: const Text(
                         'No News At This Time!',
                         style: TextStyle(fontSize: 20),
                       ),
@@ -88,7 +88,7 @@ class _OverViewScreenState extends State<OverViewScreen> {
                       crossAxisCount: 1,
                       childAspectRatio: 3 / 2,
                       crossAxisSpacing: 10,
-                      mainAxisSpacing: 10,
+                      mainAxisSpacing: 20,
                     ),
                     itemBuilder: (ctx, i) {
                       return ChangeNotifierProvider.value(

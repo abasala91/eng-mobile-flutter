@@ -2,6 +2,7 @@ import 'package:eng/models/http_exception.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../providers/auth.dart';
+import 'dart:math';
 
 enum AuthMode { Signup, Login }
 
@@ -21,7 +22,7 @@ class AuthScreen extends StatelessWidget {
             decoration: BoxDecoration(
               gradient: LinearGradient(
                 colors: [
-                  Color.fromARGB(255, 40, 100, 231).withOpacity(0.5),
+                  Color.fromARGB(255, 188, 206, 245).withOpacity(0.5),
                   Color.fromARGB(255, 59, 214, 72).withOpacity(0.9),
                 ],
                 begin: Alignment.topLeft,
@@ -35,9 +36,24 @@ class AuthScreen extends StatelessWidget {
               height: deviceSize.height,
               width: deviceSize.width,
               child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
+                // mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: <Widget>[
+                  SizedBox(
+                    height: 60,
+                  ),
+                  Container(
+                    height: 200,
+                    width: 200,
+                    decoration: BoxDecoration(
+                        image: DecorationImage(
+                            image: AssetImage('assets/images/login.png'))),
+                  ),
+                  // CircleAvatar(
+                  //   radius: 120,
+                  //   backgroundColor: Colors.red.withOpacity(0),
+                  //   backgroundImage: AssetImage('assets/images/login.png'),
+                  // ),
                   Flexible(
                     flex: deviceSize.width > 600 ? 2 : 1,
                     child: AuthCard(),
@@ -122,9 +138,6 @@ class _AuthCardState extends State<AuthCard> {
       ),
       elevation: 8.0,
       child: Container(
-        height: _authMode == AuthMode.Signup ? 320 : 300,
-        constraints:
-            BoxConstraints(minHeight: _authMode == AuthMode.Signup ? 320 : 300),
         width: deviceSize.width * 0.75,
         padding: const EdgeInsets.all(16.0),
         child: Form(

@@ -42,7 +42,7 @@ class _MyServicesScreenState extends State<MyServicesScreen> {
       body: reservesItems.isEmpty
           ? Center(
               child: Text(
-                'No reserves added yet!',
+                'No reservations added yet!',
                 style: TextStyle(fontSize: 20),
               ),
             )

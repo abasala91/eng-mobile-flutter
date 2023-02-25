@@ -1,1 +1,1 @@
-const String appUrl = 'http://192.168.1.102:5000';
+const String appUrl = 'http://192.241.131.204';

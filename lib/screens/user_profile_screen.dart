@@ -42,10 +42,9 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
   final ImagePicker _picker = ImagePicker();
   void _pickImage() async {
     var pickedImageFile = await _picker.pickImage(
-        source: ImageSource.gallery, imageQuality: 50, maxWidth: 150);
+        source: ImageSource.gallery, imageQuality: 100, maxWidth: 500);
 
     if (pickedImageFile == null) return;
-    // File newFile = File(pickedImageFile.path);
     setState(() {
       _pickedImage = File(pickedImageFile.path);
       print(_pickedImage);
@@ -63,7 +62,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
       appBar: AppBar(
         title: Text('Profile'),
         actions: [
-          IconButton(
+          ElevatedButton.icon(
               onPressed: () {
                 Provider.of<Auth>(context, listen: false).updateUser(
                     _phoneController.text,
@@ -85,6 +84,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                   },
                 ).show();
               },
+              label: Text("Save"),
               icon: Icon(Icons.save))
         ],
       ),
@@ -100,35 +100,28 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                       Center(
                         child: Column(
                           children: [
-                            Container(
-                                height: 100,
-                                width: 100,
-                                child: _pickedImage != null
-                                    ? Container(
-                                        height: 200,
-                                        decoration: BoxDecoration(
-                                            color: Colors.green,
-                                            image: DecorationImage(
-                                                image:
-                                                    FileImage(_pickedImage))))
-                                    : userData.imgUrl == null
-                                        ? CircleAvatar(
-                                            backgroundColor:
-                                                Theme.of(context).primaryColor,
-                                          )
-                                        : Image.network(userData.imgUrl)
-                                // CircleAvatar(
-                                //   radius: 40,
-                                //   backgroundImage: _pickedImage != null
-                                //       ? FileImage(_pickedImage)
-                                //       : Image.network(userData.imgUrl),
-                                //   backgroundColor: Colors.grey,
-                                // ),
-                                ),
-                            TextButton.icon(
-                                onPressed: _pickImage,
-                                icon: Icon(Icons.image),
-                                label: Text('choose image')),
+                            InkWell(
+                              onTap: _pickImage,
+                              child: Container(
+                                  height: 200,
+                                  width: 200,
+                                  child: _pickedImage != null
+                                      ? Container(
+                                          height: 200,
+                                          decoration: BoxDecoration(
+                                              color: Colors.green,
+                                              image: DecorationImage(
+                                                  image:
+                                                      FileImage(_pickedImage))))
+                                      : userData.imgUrl == null
+                                          ? CircleAvatar(
+                                              backgroundColor: Theme.of(context)
+                                                  .primaryColor,
+                                            )
+                                          : CircleAvatar(
+                                              backgroundImage: NetworkImage(
+                                                  userData.imgUrl))),
+                            ),
                           ],
                         ),
                       ),
@@ -146,7 +139,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                       ),
                       SizedBox(height: 10),
                       Text(
-                        'Subcreption ID',
+                        'Membership ID',
                         style: TextStyle(fontSize: 15, color: Colors.grey),
                       ),
                       Text(
@@ -218,7 +211,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              Text(
+                              const Text(
                                 'Address',
                                 style:
                                     TextStyle(fontSize: 15, color: Colors.grey),
@@ -237,7 +230,22 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                             Navigator.of(context)
                                 .pushNamed(ChangeUserPasswordScreen.routeName);
                           },
-                          child: Text('change password'))
+                          child: const Text('Change password')),
+                      userData.isSubPaid == false
+                          ? Transform(
+                              transform: Matrix4.identity()..scale(0.9),
+                              child: const Chip(
+                                backgroundColor:
+                                    Color.fromARGB(255, 245, 103, 38),
+                                label: Text(
+                                  ' يوجد مديونيات',
+                                  overflow: TextOverflow.ellipsis,
+                                  style: TextStyle(
+                                      color: Color.fromARGB(255, 0, 7, 0)),
+                                ),
+                              ),
+                            )
+                          : Container()
                     ],
                   ),
                 ),

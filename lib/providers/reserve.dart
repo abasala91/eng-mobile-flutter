@@ -8,21 +8,31 @@ import '../variables.dart';
 
 class ReserveItem {
   final String id;
+  final String serviceId;
   final String title;
   final String name;
   final String persons;
+  final String adults;
+  final String teens;
+  final String chairs;
   final String imgUrl;
   final String reserveStatus;
   final bool isTosDone;
+  final bool isBenefit;
 
   ReserveItem(
       {@required this.id,
+      @required this.serviceId,
       @required this.persons,
+      @required this.adults,
+      @required this.teens,
+      @required this.chairs,
       @required this.name,
       @required this.title,
       @required this.imgUrl,
       @required this.reserveStatus,
-      @required this.isTosDone});
+      @required this.isTosDone,
+      @required this.isBenefit});
 }
 
 class Reserve with ChangeNotifier {
@@ -38,12 +48,16 @@ class Reserve with ChangeNotifier {
 
   int totaApplicants = 0;
 
-  Future<void> addItem(String serviceId, String persons) async {
+  Future<String> addItem(String serviceId, String persons, String adults,
+      String teens, String chairs) async {
     try {
       var url = Uri.parse('$appUrl/api/reserves');
       final response = await http.post(url, body: {
         "tripId": serviceId,
         "persons": persons,
+        "adults": adults,
+        "teens": teens,
+        "chairs": chairs,
         "reserveStatus": 'pending'
       }, headers: {
         "x-auth-token": authToken
@@ -52,6 +66,10 @@ class Reserve with ChangeNotifier {
       if (response.statusCode >= 400) {
         throw HttpException(response.body);
       }
+      if (jsonDecode(response.body)["status"] == 200) {
+        return jsonDecode(response.body)["message"];
+      }
+
       url = Uri.parse('$appUrl/api/reserves');
       final getResponse =
           await http.get(url, headers: {"x-auth-token": authToken});
@@ -72,10 +90,12 @@ class Reserve with ChangeNotifier {
     for (var i = 0; i < extractedData.length; i++) {
       final result = ReserveItem(
           id: extractedData[i]['_id'],
+          serviceId: extractedData[i]['tripId']['_id'],
           name: extractedData[i]['userId']['name'],
           persons: extractedData[i]['persons'].toString(),
           title: extractedData[i]['tripId']['title'],
           isTosDone: extractedData[i]['tripId']['isTosDone'],
+          isBenefit: extractedData[i]['isBenefit'],
           imgUrl: extractedData[i]['tripId']['imgUrl'] != ''
               ? extractedData[i]['tripId']['imgUrl']
                   .toString()
@@ -90,11 +110,15 @@ class Reserve with ChangeNotifier {
   }
 
   List<ReserveItem> getTosServices() {
-    return items.where((element) => element.isTosDone).toList();
+    return items.where((element) {
+      return element.isTosDone || element.isBenefit;
+    }).toList();
   }
 
   List<ReserveItem> getPendingServices() {
-    return items.where((element) => element.isTosDone == false).toList();
+    return items
+        .where((element) => element.isTosDone == false && !element.isBenefit)
+        .toList();
   }
 
   Future<void> getAllReserves(String tripId) async {

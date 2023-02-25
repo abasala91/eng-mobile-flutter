@@ -129,6 +129,7 @@ class Auth with ChangeNotifier {
         address: extractedData['address'],
         emial: extractedData['email'],
         phoneNo: extractedData['phone'],
+        isSubPaid: extractedData['isSubPaid'],
         imgUrl: extractedData['imgUrl'] != ""
             ? extractedData['imgUrl'].toString().replaceAll('\\', '/')
             : null);

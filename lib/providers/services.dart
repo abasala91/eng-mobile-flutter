@@ -45,7 +45,11 @@ class Services with ChangeNotifier {
                   ? DateTime.parse(data[i]["validDays"])
                   : null,
               maxPersons: data[i]['maxPersons'],
-              serviceType: data[i]['serviceType']);
+              serviceType: data[i]['serviceType'],
+              socialDays: data[i]['socialDays'],
+              attendance: data[i]["requiredAttendance"],
+              applicants: data[i]["socialApplicants"]);
+
           loadedData.add(result);
         }
       }

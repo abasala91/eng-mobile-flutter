@@ -7,9 +7,9 @@ import './screens/services_details_screen.dart';
 import 'screens/my_services_screen.dart';
 import 'screens/change_user_password_screen.dart';
 import './screens/user_profile_screen.dart';
-import './screens/about_screen.dart';
+import 'screens/contact-us-screen.dart';
 import './screens/applicants_screen.dart';
-import './screens/complaints_screen.dart';
+import './screens/about-screen.dart';
 import './providers/auth.dart';
 import './providers/services.dart';
 import './providers/reserve.dart';
@@ -63,8 +63,8 @@ class MyApp extends StatelessWidget {
                   ChangeUserPasswordScreen.routeName: (context) =>
                       ChangeUserPasswordScreen(),
                   ApplicantsScreen.routaName: (context) => ApplicantsScreen(),
+                  ContactUsScreen.routeName: (context) => ContactUsScreen(),
                   AboutScreen.routeName: (context) => AboutScreen(),
-                  ComplaintsScreen.routeName: (context) => ComplaintsScreen()
                 },
               )),
         ));

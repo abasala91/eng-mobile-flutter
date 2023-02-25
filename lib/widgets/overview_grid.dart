@@ -15,43 +15,68 @@ class OverviewGrid extends StatelessWidget {
     final service = Provider.of<Service>(context);
     final authData = Provider.of<Auth>(context);
 
-    return ClipRRect(
-      borderRadius: BorderRadius.circular(15),
-      child: GridTile(
-        child: FittedBox(
-          child: Image.network(service.imgUrl),
-          fit: BoxFit.cover,
-        ),
-        footer: InkWell(
-            onTap: () async {
-              await Navigator.of(context).pushNamed(
-                  ServicesDetailsScreen.routeName,
-                  arguments: service.id);
+    return InkWell(
+      onTap: () async {
+        await Navigator.of(context)
+            .pushNamed(ServicesDetailsScreen.routeName, arguments: service.id);
 
-              refreshAfterPop();
-            },
-            child: GridTileBar(
-              backgroundColor: Colors.black54,
-              subtitle: Center(
-                child: Text(
-                  DateFormat.yMMMMd().format(service.timeStamp).toString(),
-                  style: TextStyle(color: Colors.white),
-                ),
+        refreshAfterPop();
+      },
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(15),
+        child: GridTile(
+          child: FittedBox(
+            child: Image.network(service.imgUrl),
+            fit: BoxFit.cover,
+          ),
+          footer: GridTileBar(
+            backgroundColor: Colors.black54,
+            subtitle: Center(
+              child: Text(
+                DateFormat.yMMMMd().format(service.timeStamp).toString(),
+                style: TextStyle(color: Colors.white),
               ),
-              title: Center(
-                child: Text(
-                  service.title,
-                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-                ),
+            ),
+            title: Center(
+              child: Text(
+                service.title,
+                style: TextStyle(
+                    // fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                    fontFamily: 'Tajawal'),
               ),
-              leading: service.validDays != null
-                  ? Text(
-                      '''valid till
+            ),
+            leading: service.validDays != null
+                ? Text(
+                    '''valid till
 ${DateFormat.yMMMMd().format(service.validDays).toString()}''',
-                      style: TextStyle(color: Colors.white),
-                    )
-                  : null,
-            )),
+                    style: TextStyle(color: Colors.white),
+                  )
+                : null,
+            trailing: service.serviceType == 'socialDay'
+                ? service.attendance - service.applicants > 0
+                    ? Chip(
+                        backgroundColor: Colors.green,
+                        avatar: CircleAvatar(
+                          backgroundColor: Colors.amber,
+                          child: FittedBox(
+                            child: Text(
+                                "${service.attendance - service.applicants}"),
+                          ),
+                        ),
+                        label: const Text(
+                          'العدد المتبقي',
+                          style: TextStyle(fontFamily: 'Tajawal'),
+                        ),
+                      )
+                    : Chip(
+                        backgroundColor: Colors.red,
+                        label: const Text('اكتمل العدد',
+                            style: TextStyle(fontFamily: 'Tajawal')),
+                      )
+                : null,
+          ),
+        ),
       ),
     );
   }

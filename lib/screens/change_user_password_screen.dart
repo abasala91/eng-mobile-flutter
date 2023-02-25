@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:eng/models/http_exception.dart';
 import 'package:eng/screens/auth-screen.dart';
 import 'package:flutter/material.dart';
@@ -39,7 +40,7 @@ class _ChangeUserPasswordScreenState extends State<ChangeUserPasswordScreen> {
 
   List<String> str = [
     "must be at least 8 charachters long.",
-    "must contains at least 1 lowercase character.",
+    "must contains at least 1 uppercase character.",
     "must contains at least 1 number.",
   ];
   @override
@@ -49,6 +50,7 @@ class _ChangeUserPasswordScreenState extends State<ChangeUserPasswordScreen> {
         title: Text('Change Password'),
         actions: [],
       ),
+      resizeToAvoidBottomInset: false,
       body: Container(
         child: Padding(
           padding: const EdgeInsets.all(8.0),
@@ -131,15 +133,25 @@ class _ChangeUserPasswordScreenState extends State<ChangeUserPasswordScreen> {
                       await Provider.of<Auth>(context, listen: false)
                           .changePassword(
                               _oldPassController.text, _newPassController.text)
-                          .then((value) => _showDialoge(
-                              Icon(
-                                Icons.done_outline,
-                                color: Colors.green,
-                              ),
-                              "Password Changed Successfully"));
-                      Navigator.of(context)
-                          .pushReplacementNamed(AuthScreen.routeName);
-                      // Navigator.of(context).pop();
+                          .then((value) => showDialog(
+                                context: context,
+                                builder: (context) => AlertDialog(
+                                  title: Icon(
+                                    Icons.done,
+                                    color: Colors.green,
+                                  ),
+                                  content:
+                                      Text('Password Changed Successfully!'),
+                                  actions: [
+                                    ElevatedButton(
+                                        onPressed: () {
+                                          Navigator.pop(context);
+                                        },
+                                        child: Text('OK'))
+                                  ],
+                                ),
+                              ).then((value) => Navigator.of(context)
+                                  .pushReplacementNamed('/')));
                     } on HttpException catch (error) {
                       var errorMessage = '${error}';
                       _showDialoge(
@@ -158,7 +170,7 @@ class _ChangeUserPasswordScreenState extends State<ChangeUserPasswordScreen> {
                           e);
                     }
                   },
-                  child: Text('save')),
+                  child: Text('Save')),
             ],
           )),
         ),

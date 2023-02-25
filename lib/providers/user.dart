@@ -7,6 +7,7 @@ class User {
   final String emial;
   final String address;
   final String imgUrl;
+  final bool isSubPaid;
 
   User(
       {this.name,
@@ -16,5 +17,6 @@ class User {
       this.address,
       this.emial,
       this.phoneNo,
-      this.imgUrl});
+      this.imgUrl,
+      this.isSubPaid});
 }
